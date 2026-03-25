@@ -57,6 +57,23 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            overflow-y: auto;
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            padding: 2rem 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -65,7 +82,6 @@
     <nav class="fixed w-full z-50 glass-nav">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <!-- Aktualisiertes Logo-Icon -->
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic text-lg">M</div>
                 <span class="text-xl font-bold tracking-tight">Marc's Krämerladen</span>
             </div>
@@ -90,7 +106,7 @@
                 <p class="text-gray-500">Stöbern Sie in den aussortierten Schätzen.</p>
             </div>
             <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-full py-20 text-center text-gray-400 italic">Lade Angebote...</div>
+                <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Angebote werden geladen...</div>
             </div>
         </section>
 
@@ -124,8 +140,8 @@
     </main>
 
     <!-- MODAL: LOGIN -->
-    <div id="admin-login-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-        <div class="bg-white w-full max-sm rounded-[2.5rem] p-10 shadow-2xl text-center">
+    <div id="admin-login-modal" class="modal-overlay">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center">
             <h2 class="text-2xl font-bold mb-6">Admin-Zugriff</h2>
             <form id="admin-login-form" class="space-y-6">
                 <input type="password" id="admin-password-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" required>
@@ -139,15 +155,15 @@
     </div>
 
     <!-- MODAL: OBJEKT FORMULAR -->
-    <div id="item-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
-            <div class="p-8 border-b border-gray-100 flex justify-between items-center">
+    <div id="item-modal" class="modal-overlay">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
                 <h2 id="modal-title" class="text-xl font-bold">Objekt erfassen</h2>
-                <button class="close-modal text-gray-400">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                <button class="close-modal text-gray-400 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
                 </button>
             </div>
-            <form id="item-form" class="p-8 space-y-5">
+            <form id="item-form" class="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
                 <input type="hidden" id="item-id">
                 <div>
                     <label class="text-sm font-bold text-gray-700 ml-1">Name</label>
@@ -170,22 +186,25 @@
                         </label>
                     </div>
                 </div>
-                <div id="image-preview" class="hidden h-40 w-full rounded-2xl object-cover bg-gray-100 flex items-center justify-center overflow-hidden"></div>
-                <button type="submit" id="btn-save-item" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl mt-4 shadow-lg flex items-center justify-center gap-3">
-                    <span id="save-text">Speichern</span>
-                </button>
-                <div id="save-error" class="hidden text-red-500 text-xs text-center mt-2 font-bold">Fehler beim Speichern.</div>
+                <div id="image-preview" class="hidden h-40 w-full rounded-2xl object-cover bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-100"></div>
+                
+                <div class="pt-4">
+                    <button type="submit" id="btn-save-item" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors">
+                        <span id="save-text">Speichern</span>
+                    </button>
+                    <div id="save-error" class="hidden text-red-500 text-xs text-center mt-3 font-bold bg-red-50 p-2 rounded-lg">Fehler beim Speichern. Bild eventuell zu gross oder Verbindung unterbrochen.</div>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL: ANFRAGE (Besucher) -->
-    <div id="inquiry-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div id="inquiry-modal" class="modal-overlay">
         <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
             <div class="p-8 border-b border-gray-100 flex justify-between items-center">
                 <h2 class="text-xl font-bold">Interesse bekunden</h2>
-                <button class="close-modal text-gray-400">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                <button class="close-modal text-gray-400 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
                 </button>
             </div>
             <form id="inquiry-form" class="p-8 space-y-5">
@@ -210,6 +229,21 @@
                 </div>
                 <h3 class="text-2xl font-bold">Interesse vermerkt!</h3>
                 <button class="close-modal mt-10 bg-gray-900 text-white px-8 py-3 rounded-xl font-bold">Schliessen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: LÖSCH-BESTÄTIGUNG -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center animate-in zoom-in duration-200">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">Wirklich löschen?</h2>
+            <p class="text-gray-500 text-sm mb-8">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div class="flex gap-4">
+                <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Abbrechen</button>
+                <button id="confirm-delete-btn" class="flex-1 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl">Löschen</button>
             </div>
         </div>
     </div>
@@ -240,6 +274,10 @@
         let inquiriesData = [];
         let currentImageBase64 = null;
 
+        // Variablen für den Lösch-Vorgang
+        let deleteTargetId = null;
+        let deleteTargetType = null; // 'item' oder 'inquiry'
+
         const initAuth = async () => {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
@@ -264,17 +302,18 @@
                 itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMarketplace();
                 renderAdminGrid();
-            });
+            }, (err) => console.error("Snapshot error (items):", err));
+            
             onSnapshot(getInquiriesCol(), (snapshot) => {
                 inquiriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderInquiriesList();
-            });
+            }, (err) => console.error("Snapshot error (inquiries):", err));
         }
 
         function renderMarketplace() {
             const grid = document.getElementById('items-grid');
             if (itemsData.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400">Aktuell keine Angebote verfügbar.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 italic">Aktuell keine Angebote verfügbar.</div>`;
                 return;
             }
             grid.innerHTML = itemsData.map(item => `
@@ -286,9 +325,9 @@
                         </div>
                     </div>
                     <div class="p-8 flex-grow flex flex-col">
-                        <h3 class="text-2xl font-bold mb-3 text-gray-900">${item.title}</h3>
-                        <p class="text-gray-500 text-sm mb-8 flex-grow">${item.description}</p>
-                        <button onclick="openInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all">
+                        <h3 class="text-2xl font-bold mb-3 text-gray-900 leading-tight">${item.title}</h3>
+                        <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">${item.description}</p>
+                        <button onclick="window.openInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all">
                             Interesse anmelden
                         </button>
                     </div>
@@ -308,10 +347,10 @@
                         <p class="text-xs text-blue-600 font-bold uppercase tracking-widest mt-1">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
+                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <button onclick="deleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all">
+                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
@@ -336,10 +375,10 @@
                             <h4 class="font-bold text-xl text-gray-900">${inq.userName}</h4>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="markAsDone('${inq.id}')" class="bg-gray-100 text-gray-600 font-bold px-6 py-3 rounded-xl hover:bg-green-100 hover:text-green-700 transition-all">
+                            <button onclick="window.markAsDone('${inq.id}')" class="bg-gray-100 text-gray-600 font-bold px-6 py-3 rounded-xl hover:bg-green-100 hover:text-green-700 transition-all">
                                  ${inq.status === 'done' ? '✓ Gesehen' : 'Gesehen markieren'}
                             </button>
-                            <button onclick="deleteInquiry('${inq.id}')" class="text-gray-400 hover:text-red-500 p-3">
+                            <button onclick="window.requestDeleteInquiry('${inq.id}')" class="text-gray-400 hover:text-red-500 p-3 rounded-xl hover:bg-red-50">
                                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
@@ -354,33 +393,63 @@
             `).join('');
         }
 
+        // --- LÖSCH LOGIK ---
+
+        window.requestDeleteItem = (id) => {
+            deleteTargetId = id;
+            deleteTargetType = 'item';
+            openModal('delete-modal');
+        };
+
+        window.requestDeleteInquiry = (id) => {
+            deleteTargetId = id;
+            deleteTargetType = 'inquiry';
+            openModal('delete-modal');
+        };
+
+        document.getElementById('confirm-delete-btn').onclick = async () => {
+            if (!deleteTargetId || !isAdminAuthenticated) return;
+            
+            try {
+                const collectionName = deleteTargetType === 'item' ? 'items' : 'inquiries';
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, deleteTargetId));
+                closeModals();
+            } catch (err) {
+                console.error("Delete error:", err);
+            } finally {
+                deleteTargetId = null;
+                deleteTargetType = null;
+            }
+        };
+
+        // --- WEITERE FUNKTIONEN ---
+
         window.markAsDone = async (id) => {
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), {
                 status: 'done'
             });
         };
 
-        window.deleteInquiry = async (id) => { if (confirm('Eintrag löschen?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id)); };
-
         document.getElementById('input-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-            document.getElementById('file-status').innerText = "Verarbeite...";
+            const status = document.getElementById('file-status');
+            status.innerText = "Verarbeite...";
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height, max = 500;
+                    let w = img.width, h = img.height, max = 400;
                     if (w > max) { h *= max/w; w = max; }
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
-                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
                     const preview = document.getElementById('image-preview');
                     preview.innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover">`;
                     preview.classList.remove('hidden');
-                    document.getElementById('file-status').innerText = "Bereit";
+                    status.innerText = "Bereit";
                 };
                 img.src = event.target.result;
             };
@@ -393,7 +462,12 @@
             const btn = document.getElementById('btn-save-item'), text = document.getElementById('save-text'), errorMsg = document.getElementById('save-error');
             btn.disabled = true; text.innerHTML = `<span class="loader"></span>`; errorMsg.classList.add('hidden');
             const id = document.getElementById('item-id').value;
-            const data = { title: document.getElementById('input-title').value, description: document.getElementById('input-desc').value, price: document.getElementById('input-price').value, updatedAt: new Date().toISOString() };
+            const data = { 
+                title: document.getElementById('input-title').value, 
+                description: document.getElementById('input-desc').value, 
+                price: document.getElementById('input-price').value, 
+                updatedAt: new Date().toISOString() 
+            };
             if (currentImageBase64) data.image = currentImageBase64;
             try {
                 if (id) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
@@ -402,8 +476,6 @@
             } catch (err) { errorMsg.classList.remove('hidden'); }
             finally { btn.disabled = false; text.innerText = "Speichern"; }
         };
-
-        window.deleteItem = async (id) => { if (confirm('Objekt löschen?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id)); };
 
         window.editItem = (id) => {
             const item = itemsData.find(i => i.id === id);
@@ -418,7 +490,7 @@
                 preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; preview.classList.remove('hidden');
                 currentImageBase64 = item.image;
             } else { preview.classList.add('hidden'); currentImageBase64 = null; }
-            document.getElementById('item-modal').classList.remove('hidden');
+            openModal('item-modal');
         };
 
         window.openInquiry = (id, title) => {
@@ -426,55 +498,79 @@
             document.getElementById('inquiry-item-name').innerText = title;
             document.getElementById('inquiry-form').classList.remove('hidden');
             document.getElementById('inquiry-success').classList.add('hidden');
-            document.getElementById('inquiry-modal').classList.remove('hidden');
+            openModal('inquiry-modal');
         };
 
         document.getElementById('inquiry-form').onsubmit = async (e) => {
             e.preventDefault();
-            await addDoc(getInquiriesCol(), { 
-                itemId: document.getElementById('inquiry-item-id').value, 
-                itemName: document.getElementById('inquiry-item-name').innerText, 
-                userName: document.getElementById('inquiry-user-name').value,
-                message: document.getElementById('inquiry-message').value,
-                timestamp: new Date().toISOString(),
-                status: 'new'
-            });
-            document.getElementById('inquiry-form').classList.add('hidden');
-            document.getElementById('inquiry-success').classList.remove('hidden');
+            try {
+                await addDoc(getInquiriesCol(), { 
+                    itemId: document.getElementById('inquiry-item-id').value, 
+                    itemName: document.getElementById('inquiry-item-name').innerText, 
+                    userName: document.getElementById('inquiry-user-name').value,
+                    message: document.getElementById('inquiry-message').value,
+                    timestamp: new Date().toISOString(),
+                    status: 'new'
+                });
+                document.getElementById('inquiry-form').classList.add('hidden');
+                document.getElementById('inquiry-success').classList.remove('hidden');
+            } catch (err) { console.error("Inquiry error:", err); }
         };
 
         document.getElementById('admin-login-form').onsubmit = (e) => {
             e.preventDefault();
             if (document.getElementById('admin-password-input').value === ADMIN_PIN) {
                 isAdminAuthenticated = true;
-                document.getElementById('admin-login-modal').classList.add('hidden');
+                closeModals();
                 switchView('admin');
             } else { document.getElementById('login-error').classList.remove('hidden'); }
         };
 
-        document.getElementById('view-market').onclick = () => switchView('marketplace');
-        document.getElementById('view-admin').onclick = () => { if (isAdminAuthenticated) switchView('admin'); else document.getElementById('admin-login-modal').classList.remove('hidden'); };
-        document.getElementById('tab-items').onclick = () => switchAdminTab('items');
-        document.getElementById('tab-inquiries').onclick = () => switchAdminTab('inquiries');
-        document.getElementById('btn-add-item').onclick = () => { 
-            document.getElementById('modal-title').innerText = "Objekt erfassen";
-            document.getElementById('item-form').reset(); document.getElementById('item-id').value = ""; 
-            document.getElementById('image-preview').classList.add('hidden'); currentImageBase64 = null;
-            document.getElementById('item-modal').classList.remove('hidden'); 
-        };
-        document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = closeModals);
+        // UI Helfer
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
         function closeModals() {
-            document.getElementById('item-modal').classList.add('hidden');
-            document.getElementById('inquiry-modal').classList.add('hidden');
-            document.getElementById('admin-login-modal').classList.add('hidden');
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            document.body.style.overflow = '';
         }
+
+        document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = closeModals);
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.onclick = (e) => { if (e.target === modal) closeModals(); };
+        });
+
+        document.getElementById('view-market').onclick = () => switchView('marketplace');
+        document.getElementById('view-admin').onclick = () => { 
+            if (isAdminAuthenticated) switchView('admin'); 
+            else openModal('admin-login-modal'); 
+        };
+        document.getElementById('tab-items').onclick = () => switchAdminTab('items');
+        document.getElementById('tab-inquiries').onclick = () => switchAdminTab('inquiries');
+        
+        document.getElementById('btn-add-item').onclick = () => { 
+            document.getElementById('modal-title').innerText = "Objekt erfassen";
+            document.getElementById('item-form').reset(); 
+            document.getElementById('item-id').value = ""; 
+            document.getElementById('image-preview').classList.add('hidden'); 
+            currentImageBase64 = null;
+            document.getElementById('file-status').innerText = "Foto wählen";
+            document.getElementById('save-error').classList.add('hidden');
+            openModal('item-modal'); 
+        };
 
         function switchView(view) {
             const m = document.getElementById('marketplace-section'), a = document.getElementById('admin-section');
             const mb = document.getElementById('view-market'), ab = document.getElementById('view-admin');
-            if (view === 'marketplace') { m.classList.remove('hidden-section'); a.classList.add('hidden-section'); mb.classList.add('text-blue-600'); ab.classList.replace('text-blue-600', 'text-gray-500'); }
-            else { m.classList.add('hidden-section'); a.classList.remove('hidden-section'); mb.classList.replace('text-blue-600', 'text-gray-500'); ab.classList.add('text-blue-600'); }
+            if (view === 'marketplace') { 
+                m.classList.remove('hidden-section'); a.classList.add('hidden-section'); 
+                mb.classList.add('text-blue-600'); ab.classList.replace('text-blue-600', 'text-gray-500'); 
+            } else { 
+                m.classList.add('hidden-section'); a.classList.remove('hidden-section'); 
+                mb.classList.replace('text-blue-600', 'text-gray-500'); ab.classList.add('text-blue-600'); 
+            }
         }
 
         function switchAdminTab(tab) {
