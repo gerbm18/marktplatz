@@ -89,7 +89,7 @@
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic text-lg">M</div>
-                <span class="text-xl font-bold tracking-tight">Marc's Krämerladen</span>
+                <span class="text-xl font-bold tracking-tight text-slate-800">Marc's Krämerladen</span>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -98,7 +98,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round"/></svg>
                     Verwalten
                 </button>
-                <div id="auth-status" class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div id="auth-status" class="w-2 h-2 rounded-full bg-gray-300" title="Verbindungsstatus"></div>
             </div>
         </div>
     </nav>
@@ -107,11 +107,11 @@
         <!-- MARKTPLATZ ANSICHT -->
         <section id="marketplace-section">
             <div class="mb-8">
-                <h1 class="text-3xl font-bold tracking-tight text-slate-800">Aktuelle Angebote</h1>
-                <p class="text-gray-500">Herzlich willkommen in meinem digitalen Krämerladen.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-800 text-center md:text-left">Aktuelle Angebote</h1>
+                <p class="text-gray-500 text-center md:text-left">Herzlich willkommen in meinem digitalen Krämerladen.</p>
             </div>
             <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Inhalte werden synchronisiert...</div>
+                <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Daten werden geladen...</div>
             </div>
         </section>
 
@@ -147,13 +147,13 @@
     <!-- MODAL: LOGIN -->
     <div id="admin-login-modal" class="modal-overlay">
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center">
-            <h2 class="text-2xl font-bold mb-6">Bereich geschützt</h2>
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Bereich geschützt</h2>
             <form id="admin-login-form" class="space-y-6">
                 <input type="password" id="admin-password-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" required>
                 <div id="login-error" class="hidden text-red-500 text-sm font-semibold">Passwort nicht korrekt.</div>
                 <div class="flex gap-4">
-                    <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Abbrechen</button>
-                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl">Login</button>
+                    <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl hover:bg-gray-200 transition-colors">Abbrechen</button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-colors">Login</button>
                 </div>
             </form>
         </div>
@@ -203,37 +203,40 @@
         </div>
     </div>
 
-    <!-- MODAL: ANFRAGE -->
+    <!-- MODAL: ANFRAGE (Interesse bekunden) -->
     <div id="inquiry-modal" class="modal-overlay">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden my-auto">
-            <div class="p-8 border-b border-gray-100 flex justify-between items-center">
-                <h2 class="text-xl font-bold">Interesse bekunden</h2>
-                <button class="close-modal text-gray-400 p-2">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
+                <h2 class="text-xl font-bold text-slate-800">Interesse bekunden</h2>
+                <button class="close-modal text-gray-400 p-2 hover:bg-gray-50 rounded-full transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
                 </button>
             </div>
-            <form id="inquiry-form" class="p-8 space-y-5">
+            <form id="inquiry-form" class="p-6 space-y-5 overflow-y-auto">
                 <input type="hidden" id="inquiry-item-id">
                 <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
                     <span class="text-[10px] font-bold text-blue-500 uppercase tracking-widest block mb-1">Gewähltes Objekt</span>
                     <p id="inquiry-item-name" class="font-bold text-gray-900 text-lg"></p>
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-gray-700 ml-1">Ihr Name</label>
-                    <input type="text" id="inquiry-user-name" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Max Mustermann">
+                    <label class="text-sm font-bold text-gray-600 ml-1">Ihr Name</label>
+                    <input type="text" id="inquiry-user-name" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Vorname Nachname">
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-gray-700 ml-1">Ihre Nachricht</label>
-                    <textarea id="inquiry-message" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ich interessiere mich für dieses Objekt..."></textarea>
+                    <label class="text-sm font-bold text-gray-600 ml-1">Ihre Nachricht</label>
+                    <textarea id="inquiry-message" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Ich interessiere mich für dieses Objekt..."></textarea>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg">Interesse senden</button>
+                <div class="pt-4 border-t border-gray-50">
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg hover:bg-blue-700">Interesse senden</button>
+                </div>
             </form>
             <div id="inquiry-success" class="hidden p-16 text-center">
                 <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4"/></svg>
                 </div>
-                <h3 class="text-2xl font-bold">Vermerkt!</h3>
-                <button class="close-modal mt-10 bg-gray-900 text-white px-8 py-3 rounded-xl font-bold">Schliessen</button>
+                <h3 class="text-2xl font-bold text-slate-800">Vermerkt!</h3>
+                <p class="text-gray-500 mt-2 text-sm">Vielen Dank für Ihre Anfrage.</p>
+                <button class="close-modal mt-10 bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors">Schliessen</button>
             </div>
         </div>
     </div>
@@ -244,11 +247,11 @@
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <h2 class="text-2xl font-bold mb-2">Löschen bestätigen?</h2>
+            <h2 class="text-2xl font-bold mb-2 text-slate-800">Löschen bestätigen?</h2>
             <p class="text-gray-500 text-sm mb-8">Dieser Eintrag wird unwiderruflich entfernt.</p>
             <div class="flex gap-4">
-                <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Nein</button>
-                <button id="confirm-delete-btn" class="flex-1 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl">Ja, löschen</button>
+                <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl hover:bg-gray-200">Nein</button>
+                <button id="confirm-delete-btn" class="flex-1 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-red-700">Ja, löschen</button>
             </div>
         </div>
     </div>
@@ -283,7 +286,7 @@
         let deleteTargetType = null;
 
         // AUTH INITIALISIERUNG
-        const initAuth = async () => {
+        const performAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
@@ -291,20 +294,23 @@
                     await signInAnonymously(auth); 
                 }
             } catch (err) {
-                console.error("Auth Error:", err);
+                console.error("Authentifizierungsfehler:", err);
             }
         };
-        initAuth();
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
+            const statusDot = document.getElementById('auth-status');
             if (user) {
-                document.getElementById('auth-status').classList.replace('bg-gray-300', 'bg-green-500');
+                statusDot.classList.replace('bg-gray-300', 'bg-green-500');
+                statusDot.classList.replace('bg-red-500', 'bg-green-500');
                 loadData();
             } else {
-                document.getElementById('auth-status').classList.replace('bg-green-500', 'bg-gray-300');
+                statusDot.classList.replace('bg-green-500', 'bg-red-500');
             }
         });
+
+        performAuth();
 
         const getItemsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'items');
         const getInquiriesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'inquiries');
@@ -315,27 +321,65 @@
                 itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMarketplace();
                 renderAdminGrid();
-            }, (err) => {
-                console.error("Snapshot Error (Items):", err);
-                if(err.code === 'permission-denied') console.warn("HINWEIS: Sicherheitsregeln prüfen!");
-            });
+            }, (err) => console.error("Firebase Error (Items):", err));
             
             onSnapshot(getInquiriesCol(), (snapshot) => {
                 inquiriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderInquiriesList();
-            }, (err) => console.error("Snapshot Error (Inquiries):", err));
+            }, (err) => console.error("Firebase Error (Inquiries):", err));
         }
+
+        // GLOBALE FUNKTIONEN (FÜR ONCLICK-AUFRUFE)
+        
+        window.openInquiry = (id) => {
+            const item = itemsData.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('inquiry-item-id').value = id;
+            document.getElementById('inquiry-item-name').innerText = item.title;
+            document.getElementById('inquiry-form').classList.remove('hidden');
+            document.getElementById('inquiry-success').classList.add('hidden');
+            openModal('inquiry-modal');
+        };
+
+        window.editItem = (id) => {
+            const item = itemsData.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('modal-title').innerText = "Objekt bearbeiten";
+            document.getElementById('item-id').value = item.id;
+            document.getElementById('input-title').value = item.title;
+            document.getElementById('input-desc').value = item.description;
+            document.getElementById('input-price').value = item.price || '';
+            const preview = document.getElementById('image-preview');
+            if (item.image) {
+                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; 
+                preview.classList.remove('hidden');
+                currentImageBase64 = item.image;
+            } else { 
+                preview.classList.add('hidden'); 
+                currentImageBase64 = null; 
+            }
+            openModal('item-modal');
+        };
+
+        window.requestDeleteItem = (id) => { deleteTargetId = id; deleteTargetType = 'item'; openModal('delete-modal'); };
+        window.requestDeleteInquiry = (id) => { deleteTargetId = id; deleteTargetType = 'inquiry'; openModal('delete-modal'); };
+        
+        window.markAsDone = async (id) => {
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
+            } catch (err) { console.error("Update Error:", err); }
+        };
 
         function renderMarketplace() {
             const grid = document.getElementById('items-grid');
             if (itemsData.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 italic">Keine Angebote vorhanden.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 italic">Aktuell keine Angebote vorhanden.</div>`;
                 return;
             }
             grid.innerHTML = itemsData.map(item => `
                 <div class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 item-card flex flex-col shadow-sm">
                     <div class="h-64 bg-gray-100 relative">
-                        ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : `<div class="flex items-center justify-center h-full text-gray-300 italic">Kein Foto</div>`}
+                        ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover" loading="lazy">` : `<div class="flex items-center justify-center h-full text-gray-300 italic">Kein Foto</div>`}
                         <div class="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-5 py-2 rounded-full font-bold text-sm shadow-md border border-black/5">
                             ${item.price ? `CHF ${parseFloat(item.price).toFixed(2)}` : 'Gratis'}
                         </div>
@@ -343,7 +387,7 @@
                     <div class="p-8 flex-grow flex flex-col">
                         <h3 class="text-2xl font-bold mb-3 text-gray-900 leading-tight">${item.title}</h3>
                         <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">${item.description}</p>
-                        <button onclick="window.openInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
+                        <button onclick="window.openInquiry('${item.id}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
                             Interesse anmelden
                         </button>
                     </div>
@@ -363,10 +407,10 @@
                         <p class="text-xs text-blue-600 font-bold mt-1 uppercase tracking-wider">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl">
+                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl">
+                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
@@ -409,26 +453,17 @@
             `).join('');
         }
 
-        window.requestDeleteItem = (id) => { deleteTargetId = id; deleteTargetType = 'item'; openModal('delete-modal'); };
-        window.requestDeleteInquiry = (id) => { deleteTargetId = id; deleteTargetType = 'inquiry'; openModal('delete-modal'); };
-
         document.getElementById('confirm-delete-btn').onclick = async () => {
             if (!deleteTargetId || !isAdminAuthenticated) return;
             try {
                 const collectionName = deleteTargetType === 'item' ? 'items' : 'inquiries';
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, deleteTargetId));
                 closeModals();
-            } catch (err) { console.error("Delete Error:", err); }
+            } catch (err) { console.error("Firebase Error:", err); }
             finally { deleteTargetId = null; deleteTargetType = null; }
         };
 
-        window.markAsDone = async (id) => {
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
-            } catch (err) { console.error("Update Error:", err); }
-        };
-
-        // Bildverarbeitung (optimiert)
+        // Bessere Bildverarbeitung
         async function processAndCompressImage(img, targetWidth = 800) {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
@@ -470,89 +505,39 @@
             reader.readAsDataURL(file);
         });
 
-        // SPEICHERN LOGIK
         document.getElementById('item-form').onsubmit = async (e) => {
             e.preventDefault();
             if (!isAdminAuthenticated) return;
-            
             const btn = document.getElementById('btn-save-item'), text = document.getElementById('save-text'), errorMsg = document.getElementById('save-error');
             errorMsg.classList.add('hidden');
             errorMsg.innerText = "";
 
             if (!currentUser) {
-                errorMsg.innerText = "Nicht authentifiziert. Bitte Seite neu laden.";
+                errorMsg.innerText = "Authentifizierung fehlgeschlagen. Bitte Seite neu laden.";
                 errorMsg.classList.remove('hidden');
                 return;
             }
 
-            btn.disabled = true; 
-            text.innerHTML = `<span class="loader"></span> Speichern...`;
-            
+            btn.disabled = true; text.innerHTML = `<span class="loader"></span>`;
             const id = document.getElementById('item-id').value;
-            const data = { 
-                title: document.getElementById('input-title').value, 
-                description: document.getElementById('input-desc').value, 
-                price: document.getElementById('input-price').value, 
-                updatedAt: new Date().toISOString() 
-            };
+            const data = { title: document.getElementById('input-title').value, description: document.getElementById('input-desc').value, price: document.getElementById('input-price').value, updatedAt: new Date().toISOString() };
             if (currentImageBase64) data.image = currentImageBase64;
             
             try {
-                if (id) {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
-                } else {
-                    data.createdAt = new Date().toISOString();
-                    await addDoc(getItemsCol(), data);
-                }
+                if (id) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
+                else { data.createdAt = new Date().toISOString(); await addDoc(getItemsCol(), data); }
                 closeModals();
             } catch (err) { 
                 console.error("Firebase Error:", err);
-                // Detaillierte Fehleranalyse
-                if (err.code === 'permission-denied') {
-                    errorMsg.innerText = "Fehler: Zugriff verweigert. Bitte Sicherheitsregeln in Firebase prüfen.";
-                } else if (!firebaseConfig.apiKey) {
-                    errorMsg.innerText = "Fehler: Firebase Konfiguration fehlt.";
-                } else {
-                    errorMsg.innerText = "Verbindung fehlgeschlagen (Code: " + err.code + "). Prüfen Sie Ihr Internet.";
-                }
+                errorMsg.innerText = err.code === 'permission-denied' ? "Sicherheitsregeln prüfen!" : "Verbindungsfehler (" + err.code + ")";
                 errorMsg.classList.remove('hidden'); 
-            } finally { 
-                btn.disabled = false; 
-                text.innerText = "Speichern"; 
-            }
-        };
-
-        window.editItem = (id) => {
-            const item = itemsData.find(i => i.id === id);
-            if (!item) return;
-            document.getElementById('modal-title').innerText = "Objekt bearbeiten";
-            document.getElementById('item-id').value = item.id;
-            document.getElementById('input-title').value = item.title;
-            document.getElementById('input-desc').value = item.description;
-            document.getElementById('input-price').value = item.price || '';
-            const preview = document.getElementById('image-preview');
-            if (item.image) {
-                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; 
-                preview.classList.remove('hidden');
-                currentImageBase64 = item.image;
-            } else { 
-                preview.classList.add('hidden'); 
-                currentImageBase64 = null; 
-            }
-            openModal('item-modal');
-        };
-
-        window.openInquiry = (id, title) => {
-            document.getElementById('inquiry-item-id').value = id;
-            document.getElementById('inquiry-item-name').innerText = title;
-            document.getElementById('inquiry-form').classList.remove('hidden');
-            document.getElementById('inquiry-success').classList.add('hidden');
-            openModal('inquiry-modal');
+            } finally { btn.disabled = false; text.innerText = "Speichern"; }
         };
 
         document.getElementById('inquiry-form').onsubmit = async (e) => {
             e.preventDefault();
             try {
+                if (!currentUser) await performAuth();
                 await addDoc(getInquiriesCol(), { 
                     itemId: document.getElementById('inquiry-item-id').value, 
                     itemName: document.getElementById('inquiry-item-name').innerText, 
@@ -596,18 +581,14 @@
         });
 
         document.getElementById('view-market').onclick = () => switchView('marketplace');
-        document.getElementById('view-admin').onclick = () => { 
-            if (isAdminAuthenticated) switchView('admin'); else openModal('admin-login-modal'); 
-        };
+        document.getElementById('view-admin').onclick = () => { if (isAdminAuthenticated) switchView('admin'); else openModal('admin-login-modal'); };
         document.getElementById('tab-items').onclick = () => switchAdminTab('items');
         document.getElementById('tab-inquiries').onclick = () => switchAdminTab('inquiries');
         
         document.getElementById('btn-add-item').onclick = () => { 
             document.getElementById('modal-title').innerText = "Objekt erfassen";
-            document.getElementById('item-form').reset(); 
-            document.getElementById('item-id').value = ""; 
-            document.getElementById('image-preview').classList.add('hidden'); 
-            currentImageBase64 = null;
+            document.getElementById('item-form').reset(); document.getElementById('item-id').value = ""; 
+            document.getElementById('image-preview').classList.add('hidden'); currentImageBase64 = null;
             document.getElementById('file-status').innerText = "Foto wählen";
             document.getElementById('save-error').classList.add('hidden');
             openModal('item-modal'); 
@@ -616,13 +597,8 @@
         function switchView(view) {
             const m = document.getElementById('marketplace-section'), a = document.getElementById('admin-section');
             const mb = document.getElementById('view-market'), ab = document.getElementById('view-admin');
-            if (view === 'marketplace') { 
-                m.classList.remove('hidden-section'); a.classList.add('hidden-section'); 
-                mb.classList.add('text-blue-600'); ab.classList.replace('text-blue-600', 'text-gray-500'); 
-            } else { 
-                m.classList.add('hidden-section'); a.classList.remove('hidden-section'); 
-                mb.classList.replace('text-blue-600', 'text-gray-500'); ab.classList.add('text-blue-600'); 
-            }
+            if (view === 'marketplace') { m.classList.remove('hidden-section'); a.classList.add('hidden-section'); mb.classList.add('text-blue-600'); ab.classList.replace('text-blue-600', 'text-gray-500'); }
+            else { m.classList.add('hidden-section'); a.classList.remove('hidden-section'); mb.classList.replace('text-blue-600', 'text-gray-500'); ab.classList.add('text-blue-600'); }
         }
 
         function switchAdminTab(tab) {
