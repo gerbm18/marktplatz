@@ -58,7 +58,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Optimierte Modal-Styles für Desktop und Mobile */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
@@ -67,18 +66,18 @@
             inset: 0;
             z-index: 100;
             padding: 1rem;
-            overflow-y: auto; /* Ganzes Overlay ist scrollbar */
+            overflow-y: auto;
         }
 
         .modal-overlay.active {
             display: flex;
             justify-content: center;
-            align-items: center; /* Zentriert auf Desktop */
+            align-items: center;
         }
 
         @media (max-width: 640px) {
             .modal-overlay.active {
-                align-items: flex-start; /* Oben ausgerichtet auf Mobile für besseres Scrollen */
+                align-items: flex-start;
             }
         }
     </style>
@@ -105,15 +104,14 @@
     </nav>
 
     <main class="pt-24 pb-12 px-4 max-w-6xl mx-auto">
-        
         <!-- MARKTPLATZ ANSICHT -->
         <section id="marketplace-section">
             <div class="mb-8">
-                <h1 class="text-3xl font-bold tracking-tight">Aktuelle Angebote</h1>
-                <p class="text-gray-500">Stöbern Sie in den aussortierten Schätzen.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-800">Aktuelle Angebote</h1>
+                <p class="text-gray-500">Herzlich willkommen in meinem digitalen Krämerladen.</p>
             </div>
             <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Angebote werden geladen...</div>
+                <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Inhalte werden synchronisiert...</div>
             </div>
         </section>
 
@@ -122,7 +120,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-gray-200 pb-6">
                 <div>
                     <h1 class="text-3xl font-bold">Verwaltung</h1>
-                    <p class="text-gray-500">Objekte und Interessenten managen.</p>
+                    <p class="text-gray-500">Managen Sie hier Ihre Objekte und Anfragen.</p>
                 </div>
                 <div class="flex bg-gray-200/50 p-1 rounded-2xl w-fit">
                     <button id="tab-items" class="px-6 py-2.5 text-sm font-bold rounded-xl transition-all tab-active">Objekte</button>
@@ -149,10 +147,10 @@
     <!-- MODAL: LOGIN -->
     <div id="admin-login-modal" class="modal-overlay">
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center">
-            <h2 class="text-2xl font-bold mb-6">Admin-Zugriff</h2>
+            <h2 class="text-2xl font-bold mb-6">Bereich geschützt</h2>
             <form id="admin-login-form" class="space-y-6">
                 <input type="password" id="admin-password-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" required>
-                <div id="login-error" class="hidden text-red-500 text-sm font-semibold">Passwort falsch.</div>
+                <div id="login-error" class="hidden text-red-500 text-sm font-semibold">Passwort nicht korrekt.</div>
                 <div class="flex gap-4">
                     <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Abbrechen</button>
                     <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl">Login</button>
@@ -161,47 +159,46 @@
         </div>
     </div>
 
-    <!-- MODAL: OBJEKT FORMULAR (Optimiert für Scrolling) -->
+    <!-- MODAL: OBJEKT FORMULAR (Optimiertes Scrolling & Desktopposition) -->
     <div id="item-modal" class="modal-overlay">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col my-auto">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
-                <h2 id="modal-title" class="text-xl font-bold">Objekt erfassen</h2>
-                <button class="close-modal text-gray-400 p-2">
+                <h2 id="modal-title" class="text-xl font-bold text-slate-800">Objekt erfassen</h2>
+                <button class="close-modal text-gray-400 p-2 hover:bg-gray-50 rounded-full transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
                 </button>
             </div>
-            <form id="item-form" class="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
+            <form id="item-form" class="p-6 space-y-5 overflow-y-auto">
                 <input type="hidden" id="item-id">
                 <div>
-                    <label class="text-sm font-bold text-gray-700 ml-1">Name</label>
-                    <input type="text" id="input-title" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="text-sm font-bold text-gray-600 ml-1">Bezeichnung</label>
+                    <input type="text" id="input-title" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-gray-700 ml-1">Beschreibung</label>
-                    <textarea id="input-desc" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    <label class="text-sm font-bold text-gray-600 ml-1">Beschreibung</label>
+                    <textarea id="input-desc" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-sm font-bold text-gray-700 ml-1">Preis (CHF)</label>
+                        <label class="text-sm font-bold text-gray-600 ml-1">Preis (CHF)</label>
                         <input type="number" id="input-price" step="0.05" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
                     <div>
-                        <label class="text-sm font-bold text-gray-700 ml-1">Foto</label>
-                        <label class="flex items-center justify-center w-full h-[60px] bg-blue-50 border-2 border-dashed border-blue-200 rounded-2xl cursor-pointer">
+                        <label class="text-sm font-bold text-gray-600 ml-1">Foto</label>
+                        <label class="flex items-center justify-center w-full h-[60px] bg-blue-50 border-2 border-dashed border-blue-200 rounded-2xl cursor-pointer hover:bg-blue-100 transition-colors">
                             <span class="text-xs font-bold text-blue-600" id="file-status">Foto wählen</span>
                             <input type="file" id="input-file" accept="image/*" capture="camera" class="hidden">
                         </label>
                     </div>
                 </div>
-                <div id="image-preview" class="hidden h-40 w-full rounded-2xl object-cover bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-100"></div>
+                <div id="image-preview" class="hidden h-48 w-full rounded-2xl object-cover bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-100 shadow-inner"></div>
                 
-                <div class="pb-4">
-                    <button type="submit" id="btn-save-item" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors">
+                <div class="pt-4 border-t border-gray-50">
+                    <button type="submit" id="btn-save-item" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:bg-blue-700 active:scale-[0.98] transition-all">
                         <span id="save-text">Speichern</span>
                     </button>
-                    <div id="save-error" class="hidden text-red-600 text-xs text-center mt-3 font-bold bg-red-50 p-3 rounded-xl border border-red-100">
-                        Das Bild ist leider zu gross. Bitte versuchen Sie es mit einem anderen Foto oder ohne Bild.
-                    </div>
+                    <!-- Dynamisches Fehlerelement ohne fixen Text -->
+                    <div id="save-error" class="hidden text-red-600 text-xs text-center mt-3 font-bold bg-red-50 p-3 rounded-xl border border-red-100 leading-relaxed animate-pulse"></div>
                 </div>
             </form>
         </div>
@@ -230,29 +227,29 @@
                     <label class="text-sm font-bold text-gray-700 ml-1">Ihre Nachricht</label>
                     <textarea id="inquiry-message" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ich interessiere mich für dieses Objekt..."></textarea>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg">Ich habe Interesse</button>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg">Interesse senden</button>
             </form>
             <div id="inquiry-success" class="hidden p-16 text-center">
                 <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4"/></svg>
                 </div>
-                <h3 class="text-2xl font-bold">Interesse vermerkt!</h3>
+                <h3 class="text-2xl font-bold">Vermerkt!</h3>
                 <button class="close-modal mt-10 bg-gray-900 text-white px-8 py-3 rounded-xl font-bold">Schliessen</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: LÖSCH-BESTÄTIGUNG -->
+    <!-- MODAL: LÖSCHEN -->
     <div id="delete-modal" class="modal-overlay">
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center my-auto">
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <h2 class="text-2xl font-bold mb-2">Wirklich löschen?</h2>
-            <p class="text-gray-500 text-sm mb-8">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <h2 class="text-2xl font-bold mb-2">Löschen bestätigen?</h2>
+            <p class="text-gray-500 text-sm mb-8">Dieser Eintrag wird unwiderruflich entfernt.</p>
             <div class="flex gap-4">
-                <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Abbrechen</button>
-                <button id="confirm-delete-btn" class="flex-1 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl">Löschen</button>
+                <button type="button" class="close-modal flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-2xl">Nein</button>
+                <button id="confirm-delete-btn" class="flex-1 bg-red-600 text-white font-bold py-4 rounded-2xl shadow-xl">Ja, löschen</button>
             </div>
         </div>
     </div>
@@ -262,6 +259,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Firebase Konfiguration (Bitte Ihre Daten einsetzen)
         const firebaseConfig = {
             apiKey: "AIzaSyDMv22b6Mlt8iu4AQWUCnVVpBkiU0SjmB8",
             authDomain: "mein-marktplatz.firebaseapp.com",
@@ -270,6 +268,10 @@
             messagingSenderId: "666842438189",
             appId: "1:666842438189:web:e48fcf5e44b9d4a8dd76a4"
         };
+
+        if (!firebaseConfig.apiKey) {
+            console.warn("WICHTIG: Firebase API Key fehlt. Die Website wird noch nicht speichern können.");
+        }
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -282,7 +284,6 @@
         let itemsData = [];
         let inquiriesData = [];
         let currentImageBase64 = null;
-
         let deleteTargetId = null;
         let deleteTargetType = null;
 
@@ -310,12 +311,12 @@
                 itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMarketplace();
                 renderAdminGrid();
-            }, (err) => console.error(err));
+            }, (err) => console.error("Firebase Snapshot Error (Items):", err));
             
             onSnapshot(getInquiriesCol(), (snapshot) => {
                 inquiriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderInquiriesList();
-            }, (err) => console.error(err));
+            }, (err) => console.error("Firebase Snapshot Error (Inquiries):", err));
         }
 
         function renderMarketplace() {
@@ -328,14 +329,14 @@
                 <div class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 item-card flex flex-col shadow-sm">
                     <div class="h-64 bg-gray-100 relative">
                         ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : `<div class="flex items-center justify-center h-full text-gray-300 italic">Kein Foto</div>`}
-                        <div class="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-5 py-2 rounded-full font-bold text-sm shadow-md">
+                        <div class="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-5 py-2 rounded-full font-bold text-sm shadow-md border border-black/5">
                             ${item.price ? `CHF ${parseFloat(item.price).toFixed(2)}` : 'Gratis'}
                         </div>
                     </div>
                     <div class="p-8 flex-grow flex flex-col">
                         <h3 class="text-2xl font-bold mb-3 text-gray-900 leading-tight">${item.title}</h3>
                         <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">${item.description}</p>
-                        <button onclick="window.openInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all">
+                        <button onclick="window.openInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
                             Interesse anmelden
                         </button>
                     </div>
@@ -352,13 +353,13 @@
                     </div>
                     <div class="flex-grow">
                         <h4 class="font-bold text-gray-900 text-lg">${item.title}</h4>
-                        <p class="text-xs text-blue-600 font-bold mt-1">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
+                        <p class="text-xs text-blue-600 font-bold mt-1 uppercase tracking-wider">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl">
+                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl">
+                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
@@ -384,9 +385,9 @@
                         </div>
                         <div class="flex gap-2">
                             <button onclick="window.markAsDone('${inq.id}')" class="bg-gray-100 text-gray-600 font-bold px-6 py-3 rounded-xl hover:bg-green-100 hover:text-green-700 transition-all">
-                                 ${inq.status === 'done' ? '✓ Gesehen' : 'Gesehen markieren'}
+                                 ${inq.status === 'done' ? '✓ Gelesen' : 'Gesehen markieren'}
                             </button>
-                            <button onclick="window.requestDeleteInquiry('${inq.id}')" class="text-gray-400 hover:text-red-500 p-3 rounded-xl hover:bg-red-50">
+                            <button onclick="window.requestDeleteInquiry('${inq.id}')" class="text-gray-400 hover:text-red-500 p-3 rounded-xl hover:bg-red-50 transition-all">
                                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
@@ -410,41 +411,53 @@
                 const collectionName = deleteTargetType === 'item' ? 'items' : 'inquiries';
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, deleteTargetId));
                 closeModals();
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Delete Error:", err); }
             finally { deleteTargetId = null; deleteTargetType = null; }
         };
 
         window.markAsDone = async (id) => {
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
+            } catch (err) { console.error("Update Error:", err); }
         };
 
-        // Verschärfte Bildverarbeitung gegen "Too Large" Fehler
+        async function processAndCompressImage(img, targetWidth = 800) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > targetWidth || h > targetWidth) {
+                    if (w > h) { h *= targetWidth/w; w = targetWidth; }
+                    else { w *= targetWidth/h; h = targetWidth; }
+                }
+                canvas.width = w; canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                
+                let quality = 0.65;
+                let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                // Firestore limit is 1MiB. Let's aim for ~800KB Base64 length (approx 1.1M chars)
+                while (dataUrl.length > 1100000 && quality > 0.1) {
+                    quality -= 0.1;
+                    dataUrl = canvas.toDataURL('image/jpeg', quality);
+                }
+                resolve(dataUrl);
+            });
+        }
+
         document.getElementById('input-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const status = document.getElementById('file-status');
-            status.innerText = "Verarbeite...";
+            status.innerText = "Rechnet...";
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = async function(event) {
                 const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height, max = 350; // Reduzierte Auflösung für mehr Sicherheit
-                    if (w > max || h > max) {
-                        if (w > h) { h *= max/w; w = max; }
-                        else { w *= max/h; h = max; }
-                    }
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    
-                    // Höhere Kompression für kleinere Dateigrösse
-                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.4);
-                    
+                img.onload = async function() {
+                    currentImageBase64 = await processAndCompressImage(img, 800);
                     const preview = document.getElementById('image-preview');
                     preview.innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover">`;
                     preview.classList.remove('hidden');
-                    status.innerText = "Fertig";
+                    status.innerText = "Bereit";
                 };
                 img.src = event.target.result;
             };
@@ -455,15 +468,23 @@
             e.preventDefault();
             if (!isAdminAuthenticated) return;
             
-            const btn = document.getElementById('btn-save-item'), text = document.getElementById('save-text'), errorMsg = document.getElementById('save-error');
+            const btn = document.getElementById('btn-save-item');
+            const text = document.getElementById('save-text');
+            const errorMsg = document.getElementById('save-error');
             
-            // Sicherheits-Check für Dateigrösse (Firestore Dokument Limit ca. 1MB)
-            if (currentImageBase64 && currentImageBase64.length > 900000) {
+            errorMsg.classList.add('hidden');
+            errorMsg.innerText = "";
+
+            // Präziser Check vor dem Sendeversuch
+            if (currentImageBase64 && currentImageBase64.length > 1100000) {
+                errorMsg.innerText = "Das Bild ist leider zu gross für die Datenbank (über 1MB). Bitte nutzen Sie ein kleineres Foto.";
                 errorMsg.classList.remove('hidden');
                 return;
             }
 
-            btn.disabled = true; text.innerHTML = `<span class="loader"></span>`; errorMsg.classList.add('hidden');
+            btn.disabled = true; 
+            text.innerHTML = `<span class="loader"></span> Speichern...`;
+            
             const id = document.getElementById('item-id').value;
             const data = { 
                 title: document.getElementById('input-title').value, 
@@ -474,13 +495,26 @@
             if (currentImageBase64) data.image = currentImageBase64;
             
             try {
-                if (id) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
-                else { data.createdAt = new Date().toISOString(); await addDoc(getItemsCol(), data); }
+                if (id) {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
+                } else {
+                    data.createdAt = new Date().toISOString();
+                    await addDoc(getItemsCol(), data);
+                }
                 closeModals();
             } catch (err) { 
-                console.error(err);
+                console.error("Firebase Storage Error:", err);
+                // DYNAMISCHE FEHLERMELDUNG:
+                if (!firebaseConfig.apiKey) {
+                    errorMsg.innerText = "Konfigurations-Fehler: Sie müssen erst den API-Key in die Datei einsetzen.";
+                } else {
+                    errorMsg.innerText = "Verbindung fehlgeschlagen. Möglicherweise sind die Sicherheitsregeln abgelaufen oder das Internet ist unterbrochen.";
+                }
                 errorMsg.classList.remove('hidden'); 
-            } finally { btn.disabled = false; text.innerText = "Speichern"; }
+            } finally { 
+                btn.disabled = false; 
+                text.innerText = "Speichern"; 
+            }
         };
 
         window.editItem = (id) => {
@@ -493,9 +527,13 @@
             document.getElementById('input-price').value = item.price || '';
             const preview = document.getElementById('image-preview');
             if (item.image) {
-                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; preview.classList.remove('hidden');
+                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; 
+                preview.classList.remove('hidden');
                 currentImageBase64 = item.image;
-            } else { preview.classList.add('hidden'); currentImageBase64 = null; }
+            } else { 
+                preview.classList.add('hidden'); 
+                currentImageBase64 = null; 
+            }
             openModal('item-modal');
         };
 
@@ -520,7 +558,7 @@
                 });
                 document.getElementById('inquiry-form').classList.add('hidden');
                 document.getElementById('inquiry-success').classList.remove('hidden');
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Inquiry error:", err); }
         };
 
         document.getElementById('admin-login-form').onsubmit = (e) => {
@@ -529,12 +567,18 @@
                 isAdminAuthenticated = true;
                 closeModals();
                 switchView('admin');
-            } else { document.getElementById('login-error').classList.remove('hidden'); }
+            } else { 
+                document.getElementById('login-error').classList.remove('hidden'); 
+                document.getElementById('admin-password-input').value = "";
+            }
         };
 
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            const modal = document.getElementById(id);
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            // Scroll modal to top when opened
+            modal.scrollTop = 0;
         }
 
         function closeModals() {
