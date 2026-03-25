@@ -58,21 +58,28 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Optimierte Modal-Styles für Desktop und Mobile */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
-            overflow-y: auto;
             display: none;
             position: fixed;
             inset: 0;
             z-index: 100;
-            padding: 2rem 1rem;
+            padding: 1rem;
+            overflow-y: auto; /* Ganzes Overlay ist scrollbar */
         }
 
         .modal-overlay.active {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center; /* Zentriert auf Desktop */
+        }
+
+        @media (max-width: 640px) {
+            .modal-overlay.active {
+                align-items: flex-start; /* Oben ausgerichtet auf Mobile für besseres Scrollen */
+            }
         }
     </style>
 </head>
@@ -154,10 +161,10 @@
         </div>
     </div>
 
-    <!-- MODAL: OBJEKT FORMULAR -->
+    <!-- MODAL: OBJEKT FORMULAR (Optimiert für Scrolling) -->
     <div id="item-modal" class="modal-overlay">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col my-auto">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
                 <h2 id="modal-title" class="text-xl font-bold">Objekt erfassen</h2>
                 <button class="close-modal text-gray-400 p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
@@ -188,19 +195,21 @@
                 </div>
                 <div id="image-preview" class="hidden h-40 w-full rounded-2xl object-cover bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-100"></div>
                 
-                <div class="pt-4">
+                <div class="pb-4">
                     <button type="submit" id="btn-save-item" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors">
                         <span id="save-text">Speichern</span>
                     </button>
-                    <div id="save-error" class="hidden text-red-500 text-xs text-center mt-3 font-bold bg-red-50 p-2 rounded-lg">Fehler beim Speichern. Bild eventuell zu gross oder Verbindung unterbrochen.</div>
+                    <div id="save-error" class="hidden text-red-600 text-xs text-center mt-3 font-bold bg-red-50 p-3 rounded-xl border border-red-100">
+                        Das Bild ist leider zu gross. Bitte versuchen Sie es mit einem anderen Foto oder ohne Bild.
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL: ANFRAGE (Besucher) -->
+    <!-- MODAL: ANFRAGE -->
     <div id="inquiry-modal" class="modal-overlay">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden my-auto">
             <div class="p-8 border-b border-gray-100 flex justify-between items-center">
                 <h2 class="text-xl font-bold">Interesse bekunden</h2>
                 <button class="close-modal text-gray-400 p-2">
@@ -235,7 +244,7 @@
 
     <!-- MODAL: LÖSCH-BESTÄTIGUNG -->
     <div id="delete-modal" class="modal-overlay">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center animate-in zoom-in duration-200">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center my-auto">
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -274,9 +283,8 @@
         let inquiriesData = [];
         let currentImageBase64 = null;
 
-        // Variablen für den Lösch-Vorgang
         let deleteTargetId = null;
-        let deleteTargetType = null; // 'item' oder 'inquiry'
+        let deleteTargetType = null;
 
         const initAuth = async () => {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -302,12 +310,12 @@
                 itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMarketplace();
                 renderAdminGrid();
-            }, (err) => console.error("Snapshot error (items):", err));
+            }, (err) => console.error(err));
             
             onSnapshot(getInquiriesCol(), (snapshot) => {
                 inquiriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderInquiriesList();
-            }, (err) => console.error("Snapshot error (inquiries):", err));
+            }, (err) => console.error(err));
         }
 
         function renderMarketplace() {
@@ -344,13 +352,13 @@
                     </div>
                     <div class="flex-grow">
                         <h4 class="font-bold text-gray-900 text-lg">${item.title}</h4>
-                        <p class="text-xs text-blue-600 font-bold uppercase tracking-widest mt-1">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
+                        <p class="text-xs text-blue-600 font-bold mt-1">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
+                        <button onclick="window.editItem('${item.id}')" class="p-4 text-blue-600 hover:bg-blue-50 rounded-2xl">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all">
+                        <button onclick="window.requestDeleteItem('${item.id}')" class="p-4 text-red-500 hover:bg-red-50 rounded-2xl">
                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
@@ -393,43 +401,24 @@
             `).join('');
         }
 
-        // --- LÖSCH LOGIK ---
-
-        window.requestDeleteItem = (id) => {
-            deleteTargetId = id;
-            deleteTargetType = 'item';
-            openModal('delete-modal');
-        };
-
-        window.requestDeleteInquiry = (id) => {
-            deleteTargetId = id;
-            deleteTargetType = 'inquiry';
-            openModal('delete-modal');
-        };
+        window.requestDeleteItem = (id) => { deleteTargetId = id; deleteTargetType = 'item'; openModal('delete-modal'); };
+        window.requestDeleteInquiry = (id) => { deleteTargetId = id; deleteTargetType = 'inquiry'; openModal('delete-modal'); };
 
         document.getElementById('confirm-delete-btn').onclick = async () => {
             if (!deleteTargetId || !isAdminAuthenticated) return;
-            
             try {
                 const collectionName = deleteTargetType === 'item' ? 'items' : 'inquiries';
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, deleteTargetId));
                 closeModals();
-            } catch (err) {
-                console.error("Delete error:", err);
-            } finally {
-                deleteTargetId = null;
-                deleteTargetType = null;
-            }
+            } catch (err) { console.error(err); }
+            finally { deleteTargetId = null; deleteTargetType = null; }
         };
-
-        // --- WEITERE FUNKTIONEN ---
 
         window.markAsDone = async (id) => {
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), {
-                status: 'done'
-            });
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
         };
 
+        // Verschärfte Bildverarbeitung gegen "Too Large" Fehler
         document.getElementById('input-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -440,16 +429,22 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height, max = 400;
-                    if (w > max) { h *= max/w; w = max; }
+                    let w = img.width, h = img.height, max = 350; // Reduzierte Auflösung für mehr Sicherheit
+                    if (w > max || h > max) {
+                        if (w > h) { h *= max/w; w = max; }
+                        else { w *= max/h; h = max; }
+                    }
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
-                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
+                    
+                    // Höhere Kompression für kleinere Dateigrösse
+                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.4);
+                    
                     const preview = document.getElementById('image-preview');
                     preview.innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover">`;
                     preview.classList.remove('hidden');
-                    status.innerText = "Bereit";
+                    status.innerText = "Fertig";
                 };
                 img.src = event.target.result;
             };
@@ -459,7 +454,15 @@
         document.getElementById('item-form').onsubmit = async (e) => {
             e.preventDefault();
             if (!isAdminAuthenticated) return;
+            
             const btn = document.getElementById('btn-save-item'), text = document.getElementById('save-text'), errorMsg = document.getElementById('save-error');
+            
+            // Sicherheits-Check für Dateigrösse (Firestore Dokument Limit ca. 1MB)
+            if (currentImageBase64 && currentImageBase64.length > 900000) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
             btn.disabled = true; text.innerHTML = `<span class="loader"></span>`; errorMsg.classList.add('hidden');
             const id = document.getElementById('item-id').value;
             const data = { 
@@ -469,12 +472,15 @@
                 updatedAt: new Date().toISOString() 
             };
             if (currentImageBase64) data.image = currentImageBase64;
+            
             try {
                 if (id) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
                 else { data.createdAt = new Date().toISOString(); await addDoc(getItemsCol(), data); }
                 closeModals();
-            } catch (err) { errorMsg.classList.remove('hidden'); }
-            finally { btn.disabled = false; text.innerText = "Speichern"; }
+            } catch (err) { 
+                console.error(err);
+                errorMsg.classList.remove('hidden'); 
+            } finally { btn.disabled = false; text.innerText = "Speichern"; }
         };
 
         window.editItem = (id) => {
@@ -514,7 +520,7 @@
                 });
                 document.getElementById('inquiry-form').classList.add('hidden');
                 document.getElementById('inquiry-success').classList.remove('hidden');
-            } catch (err) { console.error("Inquiry error:", err); }
+            } catch (err) { console.error(err); }
         };
 
         document.getElementById('admin-login-form').onsubmit = (e) => {
@@ -526,7 +532,6 @@
             } else { document.getElementById('login-error').classList.remove('hidden'); }
         };
 
-        // UI Helfer
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -544,8 +549,7 @@
 
         document.getElementById('view-market').onclick = () => switchView('marketplace');
         document.getElementById('view-admin').onclick = () => { 
-            if (isAdminAuthenticated) switchView('admin'); 
-            else openModal('admin-login-modal'); 
+            if (isAdminAuthenticated) switchView('admin'); else openModal('admin-login-modal'); 
         };
         document.getElementById('tab-items').onclick = () => switchAdminTab('items');
         document.getElementById('tab-inquiries').onclick = () => switchAdminTab('inquiries');
