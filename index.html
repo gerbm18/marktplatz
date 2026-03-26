@@ -37,9 +37,15 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .status-replied {
-            background-color: #f0fdf4;
-            border-color: #bbf7d0;
+        .category-folder {
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .category-folder.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
         }
 
         .loader {
@@ -80,6 +86,23 @@
                 align-items: flex-start;
             }
         }
+
+        .unread-badge {
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -94,37 +117,44 @@
             
             <div class="flex items-center space-x-4">
                 <button id="view-market" class="text-sm font-semibold text-blue-600">Marktplatz</button>
-                <button id="view-admin" class="text-sm font-semibold text-gray-500 hover:text-gray-900 flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round"/></svg>
-                    Verwalten
-                </button>
+                <div class="relative">
+                    <button id="view-admin" class="text-sm font-semibold text-gray-500 hover:text-gray-900 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round"/></svg>
+                        Verwalten
+                    </button>
+                    <div id="unread-inquiry-badge" class="unread-badge hidden">N</div>
+                </div>
                 <div id="auth-status" class="w-2 h-2 rounded-full bg-gray-300" title="Verbindungsstatus"></div>
             </div>
         </div>
     </nav>
 
     <main class="pt-24 pb-12 px-4 max-w-6xl mx-auto">
-        <!-- MARKTPLATZ ANSICHT -->
         <section id="marketplace-section">
             <div class="mb-8">
-                <h1 class="text-3xl font-bold tracking-tight text-slate-800 text-center md:text-left">Aktuelle Angebote</h1>
-                <p class="text-gray-500 text-center md:text-left">Herzlich willkommen in meinem digitalen Krämerladen.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-800">Aktuelle Angebote</h1>
+                <p class="text-gray-500">Herzlich willkommen in meinem digitalen Krämerladen.</p>
             </div>
-            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div id="category-filter-container" class="flex gap-2 overflow-x-auto pb-6 mb-2 no-scrollbar">
+                <!-- Kategorien werden hier geladen -->
+            </div>
+
+            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 <div class="col-span-full py-20 text-center text-gray-400 italic text-sm">Daten werden geladen...</div>
             </div>
         </section>
 
-        <!-- ADMIN ANSICHT -->
         <section id="admin-section" class="hidden-section">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-gray-200 pb-6">
                 <div>
                     <h1 class="text-3xl font-bold">Verwaltung</h1>
-                    <p class="text-gray-500">Managen Sie hier Ihre Objekte und Anfragen.</p>
+                    <p class="text-gray-500">Managen Sie hier Ihre Objekte und Kategorien.</p>
                 </div>
                 <div class="flex bg-gray-200/50 p-1 rounded-2xl w-fit">
-                    <button id="tab-items" class="px-6 py-2.5 text-sm font-bold rounded-xl transition-all tab-active">Objekte</button>
-                    <button id="tab-inquiries" class="px-6 py-2.5 text-sm font-bold text-gray-500 rounded-xl transition-all">Interessenten</button>
+                    <button id="tab-items" class="px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all tab-active">Objekte</button>
+                    <button id="tab-inquiries" class="px-4 py-2.5 text-xs sm:text-sm font-bold text-gray-500 rounded-xl transition-all">Interessenten</button>
+                    <button id="tab-categories" class="px-4 py-2.5 text-xs sm:text-sm font-bold text-gray-500 rounded-xl transition-all">Kategorien</button>
                 </div>
             </div>
 
@@ -132,7 +162,7 @@
                 <div class="flex justify-end mb-6">
                     <button id="btn-add-item" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round"/></svg>
-                        Neues Objekt erfassen
+                        Neues Objekt
                     </button>
                 </div>
                 <div id="admin-grid" class="grid grid-cols-1 gap-4"></div>
@@ -140,6 +170,19 @@
 
             <div id="admin-inquiries-container" class="hidden mt-8">
                 <div id="inquiries-list" class="space-y-4"></div>
+            </div>
+
+            <div id="admin-categories-container" class="hidden mt-8">
+                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm mb-6">
+                    <h3 class="font-bold text-lg mb-4">Neue Kategorie erstellen</h3>
+                    <form id="category-form" class="flex gap-4">
+                        <input type="text" id="category-name-input" required class="flex-grow bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="z.B. Möbel">
+                        <button type="submit" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md hover:bg-blue-700 transition-all">Hinzufügen</button>
+                    </form>
+                </div>
+                <div id="categories-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Kategorien Liste wird hier geladen -->
+                </div>
             </div>
         </section>
     </main>
@@ -175,6 +218,12 @@
                     <input type="text" id="input-title" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 </div>
                 <div>
+                    <label class="text-sm font-bold text-gray-600 ml-1">Kategorie</label>
+                    <select id="input-category" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                        <!-- Kategorien Optionen werden hier geladen -->
+                    </select>
+                </div>
+                <div>
                     <label class="text-sm font-bold text-gray-600 ml-1">Beschreibung</label>
                     <textarea id="input-desc" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all"></textarea>
                 </div>
@@ -203,7 +252,7 @@
         </div>
     </div>
 
-    <!-- MODAL: ANFRAGE (Interesse bekunden) -->
+    <!-- MODAL: ANFRAGE (INTERESSE BEKUNDEN) - Jetzt mit korrektem Flex-Spaltenlayout für Scrolling -->
     <div id="inquiry-modal" class="modal-overlay">
         <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
@@ -227,10 +276,10 @@
                     <textarea id="inquiry-message" required rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Ich interessiere mich für dieses Objekt..."></textarea>
                 </div>
                 <div class="pt-4 border-t border-gray-50">
-                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg hover:bg-blue-700">Interesse senden</button>
+                    <button type="submit" id="btn-submit-inquiry" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition-all text-lg hover:bg-blue-700">Interesse senden</button>
                 </div>
             </form>
-            <div id="inquiry-success" class="hidden p-16 text-center">
+            <div id="inquiry-success" class="hidden p-16 text-center overflow-y-auto">
                 <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4"/></svg>
                 </div>
@@ -261,7 +310,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Konfiguration (Bitte Ihre Daten einsetzen)
         const firebaseConfig = {
             apiKey: "AIzaSyDMv22b6Mlt8iu4AQWUCnVVpBkiU0SjmB8",
             authDomain: "mein-marktplatz.firebaseapp.com",
@@ -281,11 +329,12 @@
         let currentUser = null;
         let itemsData = [];
         let inquiriesData = [];
+        let categoriesData = [];
+        let activeFilter = 'all';
         let currentImageBase64 = null;
         let deleteTargetId = null;
         let deleteTargetType = null;
 
-        // AUTH INITIALISIERUNG
         const performAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -293,9 +342,7 @@
                 } else { 
                     await signInAnonymously(auth); 
                 }
-            } catch (err) {
-                console.error("Authentifizierungsfehler:", err);
-            }
+            } catch (err) { console.error("Auth Error:", err); }
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -314,6 +361,7 @@
 
         const getItemsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'items');
         const getInquiriesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'inquiries');
+        const getCategoriesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'categories');
 
         function loadData() {
             if (!currentUser) return;
@@ -321,63 +369,94 @@
                 itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMarketplace();
                 renderAdminGrid();
-            }, (err) => console.error("Firebase Error (Items):", err));
+            }, (err) => console.error(err));
             
             onSnapshot(getInquiriesCol(), (snapshot) => {
                 inquiriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderInquiriesList();
-            }, (err) => console.error("Firebase Error (Inquiries):", err));
+                updateInquiryBadge();
+            }, (err) => console.error(err));
+
+            onSnapshot(getCategoriesCol(), (snapshot) => {
+                categoriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderCategoryFilter();
+                renderAdminCategories();
+                updateCategoryDropdown();
+            }, (err) => console.error(err));
         }
 
-        // GLOBALE FUNKTIONEN (FÜR ONCLICK-AUFRUFE)
-        
-        window.openInquiry = (id) => {
-            const item = itemsData.find(i => i.id === id);
-            if (!item) return;
-            document.getElementById('inquiry-item-id').value = id;
-            document.getElementById('inquiry-item-name').innerText = item.title;
-            document.getElementById('inquiry-form').classList.remove('hidden');
-            document.getElementById('inquiry-success').classList.add('hidden');
-            openModal('inquiry-modal');
+        function updateInquiryBadge() {
+            const badge = document.getElementById('unread-inquiry-badge');
+            const unreadCount = inquiriesData.filter(inq => inq.status !== 'done').length;
+            if (unreadCount > 0) { badge.classList.remove('hidden'); } 
+            else { badge.classList.add('hidden'); }
+        }
+
+        function renderCategoryFilter() {
+            const container = document.getElementById('category-filter-container');
+            let html = `<button onclick="window.setFilter('all')" class="category-folder px-6 py-2 rounded-2xl font-bold text-sm bg-white border border-gray-100 shadow-sm hover:shadow-md ${activeFilter === 'all' ? 'active' : 'text-gray-500'}">Alle</button>`;
+            categoriesData.sort((a,b) => a.name.localeCompare(b.name)).forEach(cat => {
+                html += `<button onclick="window.setFilter('${cat.id}')" class="category-folder px-6 py-2 rounded-2xl font-bold text-sm bg-white border border-gray-100 shadow-sm hover:shadow-md ${activeFilter === cat.id ? 'active' : 'text-gray-500'}">${cat.name}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.setFilter = (catId) => {
+            activeFilter = catId;
+            renderCategoryFilter();
+            renderMarketplace();
         };
 
-        window.editItem = (id) => {
-            const item = itemsData.find(i => i.id === id);
-            if (!item) return;
-            document.getElementById('modal-title').innerText = "Objekt bearbeiten";
-            document.getElementById('item-id').value = item.id;
-            document.getElementById('input-title').value = item.title;
-            document.getElementById('input-desc').value = item.description;
-            document.getElementById('input-price').value = item.price || '';
-            const preview = document.getElementById('image-preview');
-            if (item.image) {
-                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; 
-                preview.classList.remove('hidden');
-                currentImageBase64 = item.image;
-            } else { 
-                preview.classList.add('hidden'); 
-                currentImageBase64 = null; 
+        function renderAdminCategories() {
+            const list = document.getElementById('categories-list');
+            if (categoriesData.length === 0) {
+                list.innerHTML = `<div class="col-span-full py-10 text-center text-gray-400 italic text-sm">Noch keine Kategorien definiert.</div>`;
+                return;
             }
-            openModal('item-modal');
+            list.innerHTML = categoriesData.map(cat => `
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center">
+                    <span class="font-bold text-slate-800">${cat.name}</span>
+                    <button onclick="window.requestDeleteCategory('${cat.id}')" class="text-red-400 hover:text-red-600 p-2 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" stroke-width="2"/></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateCategoryDropdown() {
+            const select = document.getElementById('input-category');
+            if (!select) return;
+            let html = `<option value="">-- Keine Kategorie --</option>`;
+            categoriesData.forEach(cat => {
+                html += `<option value="${cat.id}">${cat.name}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        document.getElementById('category-form').onsubmit = async (e) => {
+            e.preventDefault();
+            if (!isAdminAuthenticated) return;
+            const nameInput = document.getElementById('category-name-input');
+            const name = nameInput.value.trim();
+            if (name) {
+                try {
+                    await addDoc(getCategoriesCol(), { name, createdAt: new Date().toISOString() });
+                    nameInput.value = "";
+                } catch (err) { console.error(err); }
+            }
         };
 
-        window.requestDeleteItem = (id) => { deleteTargetId = id; deleteTargetType = 'item'; openModal('delete-modal'); };
-        window.requestDeleteInquiry = (id) => { deleteTargetId = id; deleteTargetType = 'inquiry'; openModal('delete-modal'); };
-        
-        window.markAsDone = async (id) => {
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' });
-            } catch (err) { console.error("Update Error:", err); }
-        };
+        window.requestDeleteCategory = (id) => { deleteTargetId = id; deleteTargetType = 'category'; openModal('delete-modal'); };
 
         function renderMarketplace() {
             const grid = document.getElementById('items-grid');
-            if (itemsData.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 italic">Aktuell keine Angebote vorhanden.</div>`;
+            const filteredItems = activeFilter === 'all' ? itemsData : itemsData.filter(i => i.categoryId === activeFilter);
+            if (filteredItems.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 italic">Hier gibt es aktuell keine Schätze zu entdecken.</div>`;
                 return;
             }
-            grid.innerHTML = itemsData.map(item => `
-                <div class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 item-card flex flex-col shadow-sm">
+            grid.innerHTML = filteredItems.map(item => `
+                <div class="bg-white rounded-[2.5rem] overflow-hidden item-card flex flex-col shadow-sm border border-gray-100">
                     <div class="h-64 bg-gray-100 relative">
                         ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover" loading="lazy">` : `<div class="flex items-center justify-center h-full text-gray-300 italic">Kein Foto</div>`}
                         <div class="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-5 py-2 rounded-full font-bold text-sm shadow-md border border-black/5">
@@ -385,6 +464,7 @@
                         </div>
                     </div>
                     <div class="p-8 flex-grow flex flex-col">
+                        <span class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">${getCategoryName(item.categoryId)}</span>
                         <h3 class="text-2xl font-bold mb-3 text-gray-900 leading-tight">${item.title}</h3>
                         <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">${item.description}</p>
                         <button onclick="window.openInquiry('${item.id}')" class="w-full bg-blue-50 text-blue-600 font-bold py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
@@ -395,6 +475,12 @@
             `).join('');
         }
 
+        function getCategoryName(catId) {
+            if (!catId) return "Unkategorisiert";
+            const cat = categoriesData.find(c => c.id === catId);
+            return cat ? cat.name : "Unkategorisiert";
+        }
+
         function renderAdminGrid() {
             const grid = document.getElementById('admin-grid');
             grid.innerHTML = itemsData.map(item => `
@@ -403,6 +489,7 @@
                         ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : ''}
                     </div>
                     <div class="flex-grow">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${getCategoryName(item.categoryId)}</span>
                         <h4 class="font-bold text-gray-900 text-lg">${item.title}</h4>
                         <p class="text-xs text-blue-600 font-bold mt-1 uppercase tracking-wider">${item.price ? item.price + ' CHF' : 'Gratis'}</p>
                     </div>
@@ -456,14 +543,18 @@
         document.getElementById('confirm-delete-btn').onclick = async () => {
             if (!deleteTargetId || !isAdminAuthenticated) return;
             try {
-                const collectionName = deleteTargetType === 'item' ? 'items' : 'inquiries';
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, deleteTargetId));
+                let col = deleteTargetType === 'item' ? 'items' : deleteTargetType === 'inquiry' ? 'inquiries' : 'categories';
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, deleteTargetId));
                 closeModals();
-            } catch (err) { console.error("Firebase Error:", err); }
+            } catch (err) { console.error(err); }
             finally { deleteTargetId = null; deleteTargetType = null; }
         };
 
-        // Bessere Bildverarbeitung
+        window.markAsDone = async (id) => {
+            try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inquiries', id), { status: 'done' }); } 
+            catch (err) { console.error(err); }
+        };
+
         async function processAndCompressImage(img, targetWidth = 800) {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
@@ -510,32 +601,33 @@
             if (!isAdminAuthenticated) return;
             const btn = document.getElementById('btn-save-item'), text = document.getElementById('save-text'), errorMsg = document.getElementById('save-error');
             errorMsg.classList.add('hidden');
-            errorMsg.innerText = "";
-
-            if (!currentUser) {
-                errorMsg.innerText = "Authentifizierung fehlgeschlagen. Bitte Seite neu laden.";
-                errorMsg.classList.remove('hidden');
-                return;
-            }
-
-            btn.disabled = true; text.innerHTML = `<span class="loader"></span>`;
+            if (!currentUser) { errorMsg.innerText = "Auth Fehler. Seite neu laden."; errorMsg.classList.remove('hidden'); return; }
+            btn.disabled = true; text.innerHTML = `<span class="loader"></span> Speichern...`;
             const id = document.getElementById('item-id').value;
-            const data = { title: document.getElementById('input-title').value, description: document.getElementById('input-desc').value, price: document.getElementById('input-price').value, updatedAt: new Date().toISOString() };
+            const data = { title: document.getElementById('input-title').value, categoryId: document.getElementById('input-category').value, description: document.getElementById('input-desc').value, price: document.getElementById('input-price').value, updatedAt: new Date().toISOString() };
             if (currentImageBase64) data.image = currentImageBase64;
-            
             try {
                 if (id) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'items', id), data, { merge: true });
                 else { data.createdAt = new Date().toISOString(); await addDoc(getItemsCol(), data); }
                 closeModals();
-            } catch (err) { 
-                console.error("Firebase Error:", err);
-                errorMsg.innerText = err.code === 'permission-denied' ? "Sicherheitsregeln prüfen!" : "Verbindungsfehler (" + err.code + ")";
-                errorMsg.classList.remove('hidden'); 
-            } finally { btn.disabled = false; text.innerText = "Speichern"; }
+            } catch (err) { errorMsg.innerText = "Fehler (" + err.code + ")"; errorMsg.classList.remove('hidden'); }
+            finally { btn.disabled = false; text.innerText = "Speichern"; }
+        };
+
+        window.openInquiry = (id) => {
+            const item = itemsData.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('inquiry-item-id').value = id;
+            document.getElementById('inquiry-item-name').innerText = item.title;
+            document.getElementById('inquiry-form').classList.remove('hidden');
+            document.getElementById('inquiry-success').classList.add('hidden');
+            openModal('inquiry-modal');
         };
 
         document.getElementById('inquiry-form').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btn-submit-inquiry');
+            btn.disabled = true;
             try {
                 if (!currentUser) await performAuth();
                 await addDoc(getInquiriesCol(), { 
@@ -548,8 +640,29 @@
                 });
                 document.getElementById('inquiry-form').classList.add('hidden');
                 document.getElementById('inquiry-success').classList.remove('hidden');
-            } catch (err) { console.error("Inquiry Error:", err); }
+            } catch (err) { console.error(err); }
+            finally { btn.disabled = false; }
         };
+
+        window.editItem = (id) => {
+            const item = itemsData.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('modal-title').innerText = "Objekt bearbeiten";
+            document.getElementById('item-id').value = item.id;
+            document.getElementById('input-title').value = item.title;
+            document.getElementById('input-category').value = item.categoryId || "";
+            document.getElementById('input-desc').value = item.description;
+            document.getElementById('input-price').value = item.price || '';
+            const preview = document.getElementById('image-preview');
+            if (item.image) {
+                preview.innerHTML = `<img src="${item.image}" class="w-full h-full object-cover">`; preview.classList.remove('hidden');
+                currentImageBase64 = item.image;
+            } else { preview.classList.add('hidden'); currentImageBase64 = null; }
+            openModal('item-modal');
+        };
+
+        window.requestDeleteItem = (id) => { deleteTargetId = id; deleteTargetType = 'item'; openModal('delete-modal'); };
+        window.requestDeleteInquiry = (id) => { deleteTargetId = id; deleteTargetType = 'inquiry'; openModal('delete-modal'); };
 
         document.getElementById('admin-login-form').onsubmit = (e) => {
             e.preventDefault();
@@ -557,34 +670,18 @@
                 isAdminAuthenticated = true;
                 closeModals();
                 switchView('admin');
-            } else { 
-                document.getElementById('login-error').classList.remove('hidden'); 
-                document.getElementById('admin-password-input').value = "";
-            }
+            } else { document.getElementById('login-error').classList.remove('hidden'); document.getElementById('admin-password-input').value = ""; }
         };
 
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            modal.scrollTop = 0;
-        }
-
-        function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-            document.body.style.overflow = '';
-        }
-
+        function openModal(id) { const modal = document.getElementById(id); modal.classList.add('active'); document.body.style.overflow = 'hidden'; modal.scrollTop = 0; }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active')); document.body.style.overflow = ''; }
         document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = closeModals);
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.onclick = (e) => { if (e.target === modal) closeModals(); };
-        });
-
+        document.querySelectorAll('.modal-overlay').forEach(modal => { modal.onclick = (e) => { if (e.target === modal) closeModals(); }; });
         document.getElementById('view-market').onclick = () => switchView('marketplace');
         document.getElementById('view-admin').onclick = () => { if (isAdminAuthenticated) switchView('admin'); else openModal('admin-login-modal'); };
         document.getElementById('tab-items').onclick = () => switchAdminTab('items');
         document.getElementById('tab-inquiries').onclick = () => switchAdminTab('inquiries');
-        
+        document.getElementById('tab-categories').onclick = () => switchAdminTab('categories');
         document.getElementById('btn-add-item').onclick = () => { 
             document.getElementById('modal-title').innerText = "Objekt erfassen";
             document.getElementById('item-form').reset(); document.getElementById('item-id').value = ""; 
@@ -593,19 +690,20 @@
             document.getElementById('save-error').classList.add('hidden');
             openModal('item-modal'); 
         };
-
         function switchView(view) {
             const m = document.getElementById('marketplace-section'), a = document.getElementById('admin-section');
             const mb = document.getElementById('view-market'), ab = document.getElementById('view-admin');
             if (view === 'marketplace') { m.classList.remove('hidden-section'); a.classList.add('hidden-section'); mb.classList.add('text-blue-600'); ab.classList.replace('text-blue-600', 'text-gray-500'); }
             else { m.classList.add('hidden-section'); a.classList.remove('hidden-section'); mb.classList.replace('text-blue-600', 'text-gray-500'); ab.classList.add('text-blue-600'); }
         }
-
         function switchAdminTab(tab) {
-            const iC = document.getElementById('admin-items-container'), nC = document.getElementById('admin-inquiries-container');
-            const iT = document.getElementById('tab-items'), nT = document.getElementById('tab-inquiries');
-            if (tab === 'items') { iC.classList.remove('hidden'); nC.classList.add('hidden'); iT.classList.add('tab-active'); nT.classList.remove('tab-active'); }
-            else { iC.classList.add('hidden'); nC.classList.remove('hidden'); nT.classList.add('tab-active'); iT.classList.remove('tab-active'); }
+            const iC = document.getElementById('admin-items-container'), nC = document.getElementById('admin-inquiries-container'), cC = document.getElementById('admin-categories-container');
+            const iT = document.getElementById('tab-items'), nT = document.getElementById('tab-inquiries'), cT = document.getElementById('tab-categories');
+            [iC, nC, cC].forEach(c => c.classList.add('hidden'));
+            [iT, nT, cT].forEach(t => { t.classList.remove('tab-active'); t.classList.add('text-gray-500'); });
+            if (tab === 'items') { iC.classList.remove('hidden'); iT.classList.add('tab-active'); iT.classList.remove('text-gray-500'); }
+            else if (tab === 'inquiries') { nC.classList.remove('hidden'); nT.classList.add('tab-active'); nT.classList.remove('text-gray-500'); }
+            else { cC.classList.remove('hidden'); cT.classList.add('tab-active'); cT.classList.remove('text-gray-500'); }
         }
     </script>
 </body>
